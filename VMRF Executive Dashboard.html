@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VMRF Chancellor Executive Dashboard</title>
+    <style>
+        :root {
+            --primary-nav: #1E3A8A;
+            --primary-hover: #1D4ED8;
+            --accent-teal: #14B8A6;
+            --accent-hover: #0D9488;
+            --bg-light: #F5F7FB;
+            --bg-white: #FFFFFF;
+            --text-dark: #111827;
+            --text-gray: #6B7280;
+            --text-light: #9CA3AF;
+            --border-color: #E5E7EB;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--primary-nav);
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-teal), var(--accent-hover));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .logo-subtext {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .sidebar-nav {
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(20, 184, 166, 0.15);
+            border-left-color: var(--accent-teal);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-wrapper {
+            margin-left: 260px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .university-name {
+            font-size: 13px;
+            color: var(--text-gray);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .dashboard-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-export {
+            padding: 8px 16px;
+            background: var(--bg-white);
+            color: var(--primary-nav);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-export:hover {
+            border-color: var(--primary-nav);
+            background: var(--bg-light);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-menu:hover {
+            background: var(--bg-light);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-nav), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            text-align: left;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-gray);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .filter-select {
+            padding: 6px 28px 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--text-dark);
+            background: var(--bg-white);
+            cursor: pointer;
+            min-width: 140px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            padding: 24px 32px;
+            overflow-y: auto;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .section-subtitle {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-nav), var(--accent-teal));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .kpi-change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .kpi-change.positive {
+            color: var(--success);
+        }
+
+        .kpi-change.negative {
+            color: var(--danger);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Funnel */
+        .funnel-stage {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 16px;
+        }
+
+        .funnel-label {
+            width: 140px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .funnel-bar-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .funnel-bar {
+            height: 44px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .funnel-bar:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .funnel-value {
+            font-size: 16px;
+        }
+
+        .funnel-metrics {
+            width: 120px;
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* Bar Chart */
+        .bar-chart {
+            padding: 16px 0;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .bar-label {
+            width: 240px;
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .bar-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 28px;
+            background: var(--bg-light);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .bar-count {
+            width: 80px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-suffix {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* Donut Chart */
+        .donut-container {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .donut-chart {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+
+        .donut-legend {
+            flex: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .legend-item:last-child {
+            border-bottom: none;
+        }
+
+        .legend-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-text {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        .legend-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 13px;
+        }
+
+        /* Alert Box */
+        .alert-box {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--warning);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .alert-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .alert-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-text {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+
+        /* Report Buttons */
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .report-btn {
+            padding: 16px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .report-btn:hover {
+            background: var(--primary-nav);
+            color: white;
+            border-color: var(--primary-nav);
+            box-shadow: var(--shadow-md);
+        }
+
+        .report-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .report-title {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: var(--bg-light);
+        }
+
+        .data-table th {
+            padding: 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-gray);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .progress-mini {
+            width: 60px;
+            height: 6px;
+            background: var(--bg-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-teal);
+            border-radius: 3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">VM</div>
+                <div>
+                    <div class="logo-text">Vinayaka Missions</div>
+                    <div class="logo-subtext">Research Foundation</div>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🎓</span>
+                <span>Admissions</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📚</span>
+                <span>Academics</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">👨‍🏫</span>
+                <span>Faculty</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🔬</span>
+                <span>Research</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📝</span>
+                <span>Examinations</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">💰</span>
+                <span>Finance</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🏢</span>
+                <span>Infrastructure</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span>Hostel</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">✅</span>
+                <span>Compliance</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📄</span>
+                <span>Reports</span>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <div class="university-name">Vinayaka Mission's Research Foundation University</div>
+                    <h1 class="dashboard-title">Chancellor Executive Dashboard</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-export">📥 Export Reports</button>
+                    <div class="user-menu">
+                        <div class="user-avatar">CH</div>
+                        <div class="user-info">
+                            <div class="user-name">Chancellor</div>
+                            <div class="user-role">Executive</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label class="filter-label">Academic Year</label>
+                    <select class="filter-select">
+                        <option>2026-2027</option>
+                        <option>2025-2026</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Institution</label>
+                    <select class="filter-select">
+                        <option>All Colleges</option>
+                        <option>Engineering</option>
+                        <option>Medical</option>
+                        <option>Dental</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Faculty</label>
+                    <select class="filter-select">
+                        <option>All Faculties</option>
+                        <option>Science & Technology</option>
+                        <option>Health Sciences</option>
+                        <option>Management</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Program Level</label>
+                    <select class="filter-select">
+                        <option>All Levels</option>
+                        <option>UG</option>
+                        <option>PG</option>
+                        <option>Doctoral</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <!-- Section 1: University Overview -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">University Overview</h2>
+                    <p class="section-subtitle">Key performance indicators across the institution</p>
+                </div>
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(30, 58, 138, 0.1); color: #1E3A8A;">👥</div>
+                        <div class="kpi-label">Total Students</div>
+                        <div class="kpi-value">32,540</div>
+                        <div class="kpi-change positive">↑ 8.2% from last year</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(20, 184, 166, 0.1); color: #14B8A6;">👨‍🏫</div>
+                        <div class="kpi-label">Total Faculty</div>
+                        <div class="kpi-value">1,860</div>
+                        <div class="kpi-change positive">↑ 5.1% from last year</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;">🏫</div>
+                        <div class="kpi-label">Total Colleges</div>
+                        <div class="kpi-value">12</div>
+                        <div class="kpi-change" style="color: var(--text-gray);">Constituent Units</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(168, 85, 247, 0.1); color: #A855F7;">📚</div>
+                        <div class="kpi-label">Total Programs</div>
+                        <div class="kpi-value">210</div>
+                        <div class="kpi-change" style="color: var(--text-gray);">UG + PG + Doctoral</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;">🔬</div>
+                        <div class="kpi-label">Research Publications</div>
+                        <div class="kpi-value">3,450</div>
+                        <div class="kpi-change positive">↑ 12.4% from last year</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.1); color: #10B981;">💰</div>
+                        <div class="kpi-label">Annual Revenue</div>
+                        <div class="kpi-value">₹420 Cr</div>
+                        <div class="kpi-change positive">↑ 6.3% from last year</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Admission Overview -->
+            <section class="section">
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Admission Overview</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Applications</div>
+                                <div class="stat-value">18,420</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Verified</div>
+                                <div class="stat-value">15,210</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Confirmed</div>
+                                <div class="stat-value">10,940</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Occupancy</div>
+                                <div class="stat-value">76<span class="stat-suffix">%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Admission Funnel</h3>
+                        </div>
+                        <div style="padding: 12px 0;">
+                            <div class="funnel-stage">
+                                <div class="funnel-label">Applications</div>
+                                <div class="funnel-bar-container">
+                                    <div class="funnel-bar" style="width: 100%; background: linear-gradient(135deg, #1E3A8A, #1D4ED8);">
+                                        <span class="funnel-value">18,420</span>
+                                    </div>
+                                </div>
+                                <div class="funnel-metrics">100%</div>
+                            </div>
+                            <div class="funnel-stage">
+                                <div class="funnel-label">Verification</div>
+                                <div class="funnel-bar-container">
+                                    <div class="funnel-bar" style="width: 82.6%; background: linear-gradient(135deg, #14B8A6, #0D9488);">
+                                        <span class="funnel-value">15,210</span>
+                                    </div>
+                                </div>
+                                <div class="funnel-metrics">82.6%</div>
+                            </div>
+                            <div class="funnel-stage">
+                                <div class="funnel-label">Counselling</div>
+                                <div class="funnel-bar-container">
+                                    <div class="funnel-bar" style="width: 66.8%; background: linear-gradient(135deg, #3B82F6, #2563EB);">
+                                        <span class="funnel-value">12,300</span>
+                                    </div>
+                                </div>
+                                <div class="funnel-metrics">66.8%</div>
+                            </div>
+                            <div class="funnel-stage">
+                                <div class="funnel-label">Confirmed</div>
+                                <div class="funnel-bar-container">
+                                    <div class="funnel-bar" style="width: 59.4%; background: linear-gradient(135deg, #A855F7, #9333EA);">
+                                        <span class="funnel-value">10,940</span>
+                                    </div>
+                                </div>
+                                <div class="funnel-metrics">59.4%</div>
+                            </div>
+                            <div class="funnel-stage">
+                                <div class="funnel-label">Fee Paid</div>
+                                <div class="funnel-bar-container">
+                                    <div class="funnel-bar" style="width: 53.1%; background: linear-gradient(135deg, #10B981, #059669);">
+                                        <span class="funnel-value">9,780</span>
+                                    </div>
+                                </div>
+                                <div class="funnel-metrics">53.1%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: College Admission Performance -->
+            <section class="section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">College Admission Performance</h3>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-item">
+                            <div class="bar-label">VM Kirupananda Variyar Engg.</div>
+                            <div class="bar-wrapper">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 65.4%; background: linear-gradient(90deg, #1E3A8A, #1D4ED8);">3,400</div>
+                                </div>
+                                <div class="bar-count">5,200</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">VM Medical College</div>
+                            <div class="bar-wrapper">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 71.0%; background: linear-gradient(90deg, #14B8A6, #0D9488);">2,200</div>
+                                </div>
+                                <div class="bar-count">3,100</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">VM Dental College</div>
+                            <div class="bar-wrapper">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 70.3%; background: linear-gradient(90deg, #3B82F6, #2563EB);">1,020</div>
+                                </div>
+                                <div class="bar-count">1,450</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">VM College of Pharmacy</div>
+                            <div class="bar-wrapper">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 65.6%; background: linear-gradient(90deg, #F59E0B, #D97706);">820</div>
+                                </div>
+                                <div class="bar-count">1,250</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">VM College of Nursing</div>
+                            <div class="bar-wrapper">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 70.6%; background: linear-gradient(90deg, #A855F7, #9333EA);">720</div>
+                                </div>
+                                <div class="bar-count">1,020</div>
+                            </div>
+                        </div>
+                        <div class="bar-item">
+                            <div class="bar-label">VM School of Management</div>
+                            <div class="bar-wrapper">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 65.3%; background: linear-gradient(90deg, #10B981, #059669);">620</div>
+                                </div>
+                                <div class="bar-count">950</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4-6: Academic, Faculty, Research -->
+            <section class="section">
+                <div class="grid-3">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Academic Performance</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Pass %</div>
+                                <div class="stat-value">91%</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Completion</div>
+                                <div class="stat-value">94%</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Avg CGPA</div>
+                                <div class="stat-value">7.8</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Engineering</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 92%; background: #1E3A8A; font-size: 11px;">92%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Medicine</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 96%; background: #14B8A6; font-size: 11px;">96%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Pharmacy</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 90%; background: #F59E0B; font-size: 11px;">90%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Faculty Overview</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Professors</div>
+                                <div class="stat-value">320</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Assoc. Prof</div>
+                                <div class="stat-value">540</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Asst. Prof</div>
+                                <div class="stat-value">1,000</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">PhD Holders</div>
+                                <div class="stat-value">1,140</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Research Overview</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Publications</div>
+                                <div class="stat-value">3,450</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Patents</div>
+                                <div class="stat-value">210</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Projects</div>
+                                <div class="stat-value">145</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Grants</div>
+                                <div class="stat-value">₹68Cr</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7-8: Finance & Infrastructure -->
+            <section class="section">
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Financial Overview</h3>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Tuition Fees</div>
+                                <div class="stat-value">₹320Cr</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Grants</div>
+                                <div class="stat-value">₹68Cr</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Scholarships</div>
+                                <div class="stat-value">₹42Cr</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Expenses</div>
+                                <div class="stat-value">₹280Cr</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <div style="font-size: 12px; font-weight: 500; color: var(--text-gray); margin-bottom: 12px;">Revenue Trend (3 Years)</div>
+                            <div class="bar-item">
+                                <div style="width: 80px; font-size: 12px;">2023-24</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 85.7%; background: #94A3B8; font-size: 11px;">₹360 Cr</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 80px; font-size: 12px;">2024-25</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 94.0%; background: #64748B; font-size: 11px;">₹395 Cr</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 80px; font-size: 12px;">2025-26</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 100%; background: #1E3A8A; font-size: 11px;">₹420 Cr</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Infrastructure Utilization</h3>
+                        </div>
+                        <div style="padding: 12px 0;">
+                            <div class="bar-item">
+                                <div style="width: 140px; font-size: 13px;">Classrooms</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 84%; background: #1E3A8A;">84%</div>
+                                    </div>
+                                    <div style="width: 60px; text-align: right; font-size: 12px; color: var(--text-gray);">420</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 140px; font-size: 13px;">Laboratories</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 79%; background: #14B8A6;">79%</div>
+                                    </div>
+                                    <div style="width: 60px; text-align: right; font-size: 12px; color: var(--text-gray);">160</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 140px; font-size: 13px;">Hostel</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 88%; background: #F59E0B;">88%</div>
+                                    </div>
+                                    <div style="width: 60px; text-align: right; font-size: 12px; color: var(--text-gray);">3,200</div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 140px; font-size: 13px;">Library</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 72%; background: #A855F7;">72%</div>
+                                    </div>
+                                    <div style="width: 60px; text-align: right; font-size: 12px; color: var(--text-gray);">Usage</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 9: Demographics -->
+            <section class="section">
+                <div class="grid-3">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Community Distribution</h3>
+                        </div>
+                        <div class="donut-container">
+                            <div class="donut-chart">
+                                <svg viewBox="0 0 100 100" style="transform: rotate(-90deg);">
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#E5E7EB" stroke-width="18"></circle>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#1E3A8A" stroke-width="18" stroke-dasharray="61.6 220" stroke-dashoffset="0"></circle>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#14B8A6" stroke-width="18" stroke-dasharray="74.8 220" stroke-dashoffset="-61.6"></circle>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#F59E0B" stroke-width="18" stroke-dasharray="39.6 220" stroke-dashoffset="-136.4"></circle>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#A855F7" stroke-width="18" stroke-dasharray="30.8 220" stroke-dashoffset="-176"></circle>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#EF4444" stroke-width="18" stroke-dasharray="8.8 220" stroke-dashoffset="-206.8"></circle>
+                                    <circle cx="50" cy="50" r="35" fill="none" stroke="#10B981" stroke-width="18" stroke-dasharray="4.4 220" stroke-dashoffset="-215.6"></circle>
+                                </svg>
+                            </div>
+                            <div class="donut-legend">
+                                <div class="legend-item">
+                                    <div class="legend-label">
+                                        <div class="legend-color" style="background: #1E3A8A;"></div>
+                                        <span class="legend-text">OC</span>
+                                    </div>
+                                    <span class="legend-value">28%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-label">
+                                        <div class="legend-color" style="background: #14B8A6;"></div>
+                                        <span class="legend-text">BC</span>
+                                    </div>
+                                    <span class="legend-value">34%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-label">
+                                        <div class="legend-color" style="background: #F59E0B;"></div>
+                                        <span class="legend-text">MBC</span>
+                                    </div>
+                                    <span class="legend-value">18%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-label">
+                                        <div class="legend-color" style="background: #A855F7;"></div>
+                                        <span class="legend-text">SC</span>
+                                    </div>
+                                    <span class="legend-value">14%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-label">
+                                        <div class="legend-color" style="background: #EF4444;"></div>
+                                        <span class="legend-text">ST</span>
+                                    </div>
+                                    <span class="legend-value">4%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-label">
+                                        <div class="legend-color" style="background: #10B981;"></div>
+                                        <span class="legend-text">EWS</span>
+                                    </div>
+                                    <span class="legend-value">2%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">First Generation & Gender</h3>
+                        </div>
+                        <div style="padding: 16px 0;">
+                            <div style="margin-bottom: 24px;">
+                                <div style="font-size: 12px; font-weight: 500; color: var(--text-gray); margin-bottom: 12px;">Gender Distribution</div>
+                                <div class="bar-item">
+                                    <div style="width: 80px; font-size: 12px;">Male</div>
+                                    <div class="bar-wrapper">
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width: 54%; background: #1E3A8A; font-size: 11px;">54%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div style="width: 80px; font-size: 12px;">Female</div>
+                                    <div class="bar-wrapper">
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width: 45%; background: #14B8A6; font-size: 11px;">45%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div style="width: 80px; font-size: 12px;">Other</div>
+                                    <div class="bar-wrapper">
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width: 1%; background: #F59E0B; font-size: 11px;">1%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; font-weight: 500; color: var(--text-gray); margin-bottom: 12px;">First Generation Students</div>
+                                <div class="bar-item">
+                                    <div style="width: 80px; font-size: 12px;">First Gen</div>
+                                    <div class="bar-wrapper">
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width: 38%; background: #A855F7; font-size: 11px;">38%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bar-item">
+                                    <div style="width: 80px; font-size: 12px;">Non First Gen</div>
+                                    <div class="bar-wrapper">
+                                        <div class="bar-track">
+                                            <div class="bar-fill" style="width: 62%; background: #3B82F6; font-size: 11px;">62%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">State-wise Distribution</h3>
+                        </div>
+                        <div style="padding: 12px 0;">
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Tamil Nadu</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 72%; background: #1E3A8A; font-size: 11px;">72%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Kerala</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 9%; background: #14B8A6; font-size: 11px;">9%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Karnataka</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 7%; background: #F59E0B; font-size: 11px;">7%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">Andhra P.</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 5%; background: #A855F7; font-size: 11px;">5%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div style="width: 100px; font-size: 12px;">North India</div>
+                                <div class="bar-wrapper">
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="width: 7%; background: #EF4444; font-size: 11px;">7%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 10-11: Compliance & Alerts -->
+            <section class="section">
+                <div class="grid-2">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Compliance & Accreditation</h3>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>NAAC Preparation</td>
+                                    <td>85% Completed</td>
+                                    <td><div class="progress-mini"><div class="progress-fill" style="width: 85%;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>NIRF Ranking Metrics</td>
+                                    <td>92% Updated</td>
+                                    <td><div class="progress-mini"><div class="progress-fill" style="width: 92%;"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>IQAC Reports</td>
+                                    <td>6 Pending</td>
+                                    <td><div class="progress-mini"><div class="progress-fill" style="width: 70%; background: var(--warning);"></div></div></td>
+                                </tr>
+                                <tr>
+                                    <td>Audit Compliance</td>
+                                    <td>98% Complete</td>
+                                    <td><div class="progress-mini"><div class="progress-fill" style="width: 98%;"></div></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert-box">
+                        <div class="chart-header" style="border: none; padding: 0; margin-bottom: 16px;">
+                            <h3 class="chart-title">Executive Alerts</h3>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon warning">⚠️</div>
+                            <div class="alert-content">
+                                <div class="alert-text">MBBS seats 95% filled - consider waitlist activation</div>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon danger">🔴</div>
+                            <div class="alert-content">
+                                <div class="alert-text">380 applications pending verification for 48+ hours</div>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon warning">⚠️</div>
+                            <div class="alert-content">
+                                <div class="alert-text">3 departments below 85% pass rate benchmark</div>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon warning">⚠️</div>
+                            <div class="alert-content">
+                                <div class="alert-text">2 colleges below 70% seat occupancy target</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 12: Quick Reports -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Executive Reports</h2>
+                    <p class="section-subtitle">Generate comprehensive reports for board meetings</p>
+                </div>
+                <div class="report-grid">
+                    <div class="report-btn">
+                        <div class="report-icon">📊</div>
+                        <div class="report-title">Admission Summary</div>
+                    </div>
+                    <div class="report-btn">
+                        <div class="report-icon">🏫</div>
+                        <div class="report-title">College Performance</div>
+                    </div>
+                    <div class="report-btn">
+                        <div class="report-icon">👨‍🏫</div>
+                        <div class="report-title">Faculty Performance</div>
+                    </div>
+                    <div class="report-btn">
+                        <div class="report-icon">💰</div>
+                        <div class="report-title">Financial Summary</div>
+                    </div>
+                    <div class="report-btn">
+                        <div class="report-icon">🔬</div>
+                        <div class="report-title">Research Output</div>
+                    </div>
+                    <div class="report-btn">
+                        <div class="report-icon">✅</div>
+                        <div class="report-title">NAAC Readiness</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Report buttons
+            const reportBtns = document.querySelectorAll('.report-btn');
+            reportBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Generating ' + this.querySelector('.report-title').textContent + '...');
+                });
+            });
+
+            // Filter changes
+            const filterSelects = document.querySelectorAll('.filter-select');
+            filterSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    console.log('Filter changed:', this.value);
+                });
+            });
+
+            // Export button
+            const exportBtn = document.querySelector('.btn-export');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function() {
+                    alert('Exporting executive dashboard reports...\n\nFormat: Excel/PDF\nRecipients: Board Members');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
